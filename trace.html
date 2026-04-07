@@ -212,7 +212,7 @@ map.on('contextmenu', function() {  // Right-click to undo
 // ================== ANSWER SYSTEM ==================
 
 window.checkAnswer = function () {
-    const ans = document.getElementById("answer").value.trim().toUpperCase();
+    const ans = document.getElementById("answer").value.trim();
 
     const modal = document.getElementById("resultModal");
     const title = document.getElementById("modalTitle");
