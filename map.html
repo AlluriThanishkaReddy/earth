@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Plot the Locations</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    margin-top: 20px;
+}
+
+#map {
+    height: 500px;
+    width: 90%;
+    margin: 20px auto;
+    border-radius: 15px;
+    border: 3px solid #00c9a7;
+}
+
+.places {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+button {
+    padding: 10px 20px;
+    margin: 10px;
+    border: none;
+    background: #00c9a7;
+    color: black;
+    border-radius: 8px;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🌍  Search Here.<br>Plot the Locations in the Next Page</h1>
+
+<!-- SHUFFLED ORDER -->
+<!-- <div class="places">
+Tokyo<br>
+New York<br>
+Johannesburg<br>
+London<br>
+São Paulo
+</div> -->
+
+<div id="map"></div>
+
+<button onclick="goNext()">Next ➜</button>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+const map = L.map('map').setView([30, 20], 3);
+
+// Map tiles
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+}).addTo(map);
+
+// REAL coordinates of places
+const places = {
+    "New York": [40.7128, -74.0060],
+    "São Paulo": [-23.5505, -46.6333],
+    "London": [51.5074, -0.1278],
+    "Johannesburg": [-26.2041, 28.0473],
+    "Tokyo": [35.6762, 139.6503]
+};
+
+let markers = [];
+
+// Click event
+map.on('click', function(e) {
+    let clicked = e.latlng;
+
+    let selectedPlace = null;
+    let selectedCoords = null;
+
+    // Detect nearest place
+    for (let place in places) {
+        let real = L.latLng(places[place]);
+
+        if (map.distance(real, clicked) < 300000) { // 300km tolerance
+            selectedPlace = place;
+            selectedCoords = real;
+            break;
+        }
+    }
+
+    // If not near any valid place → ignore
+    if (!selectedPlace) return;
+
+    // Check if already placed → UNDO
+    let existingIndex = markers.findIndex(m => m.place === selectedPlace);
+
+    if (existingIndex !== -1) {
+        map.removeLayer(markers[existingIndex].marker);
+        markers.splice(existingIndex, 1);
+    } 
+    else {
+        let marker = L.marker(selectedCoords)
+            .addTo(map)
+            .bindPopup(selectedPlace)
+            .openPopup();
+
+        markers.push({ place: selectedPlace, marker: marker });
+    }
+});
+
+// Next page
+function goNext() {
+    window.location.href = "trace.html";
+}
+</script>
+
+</body>
+</html>
