@@ -188,7 +188,7 @@ map.on('mousemove', function(e) {
 
     currentLine.addLatLng(e.latlng);
 });
-
+const correct = String.fromCharCode(80 + 7)
 // Stop drawing
 map.on('mouseup', function() {
     if (currentLine) {
@@ -220,8 +220,8 @@ window.checkAnswer = function () {
     const nextBtn = document.getElementById("nextBtn");
 
     modal.style.display = "block";
-
-    if (ans === "W") {
+    
+    if (ans === correct) {
         title.innerText = "🎉 Correct!";
         message.innerText = "You decoded the Earth’s secret 🌍✨";
         nextBtn.style.display = "inline-block";
